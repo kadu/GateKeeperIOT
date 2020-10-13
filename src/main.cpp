@@ -1,8 +1,3 @@
-/**
- * Configurar o Wifi "Smart"
- * Teste do interruptor
- * Teste da Push Bullet
- */
 #include <Arduino.h>
 
 #if defined(ESP8266)
@@ -23,10 +18,10 @@
 #include "SinricProContactsensor.h"
 #include "OneButton.h"
 
-#define appName      "GateKeeper!"
+#define appName       "GateKeeper!"
 #define ENABLE_DEBUG
 #define CONFIG_BUTTON D2
-#define GATE_SENSOR D1
+#define GATE_SENSOR   D1
 
 AsyncWebServer  server(80);
 DNSServer       dns;
@@ -34,15 +29,16 @@ SimpleTimer     timer;
 int             timerNotification;
 Ticker          ticker;
 Ticker          tickerDOG;
+Ticker          tickerLedBranco;
 volatile int    watchdogCount;
-Bounce debouncer         = Bounce();
-int statusLED[3]         = {D5, D4, D3};
-bool sendClosedMessage   = false;
-bool myPowerState        = true;
-bool shouldSaveConfig    = false;
-bool snoozedNotifications= false;
-unsigned long snoozedTimeout        = 0;
-int countOpenGarage      = 0;
+Bounce debouncer             = Bounce();
+int statusLED[3]             = {D5, D4, D3};
+bool sendClosedMessage       = false;
+bool myPowerState            = true;
+bool shouldSaveConfig        = false;
+bool snoozedNotifications    = false;
+unsigned long snoozedTimeout = 0;
+int countOpenGarage          = 0;
 
 char waitTimer[3];
 char email_1[100];
@@ -67,6 +63,11 @@ void saveConfigCallback () {
 void ledVerdeTick() {
   int state = digitalRead(statusLED[0]);  // get the current state of GPIO1 pin
   digitalWrite(statusLED[0], !state);     // set pin to the opposite state
+}
+
+void ledBrancoTick() {
+  int state = digitalRead(statusLED[2]);  // get the current state of GPIO1 pin
+  digitalWrite(statusLED[2], !state);     // set pin to the opposite state
 }
 
 void configModeCallback(AsyncWiFiManager *myWiFiManager) {
@@ -216,6 +217,7 @@ void doubleclick() {
 void snoozeNotification() {
   Serial.println("Snooze");
   snoozedNotifications = true;
+  tickerLedBranco.attach(0.4, ledBrancoTick);
   snoozedTimeout = millis() + 1800000; // 30 mins
 }
 
@@ -273,6 +275,8 @@ void repeatMe() {
     if(millis() > snoozedTimeout) {
       snoozedTimeout = 0;
       snoozedNotifications = false;
+      tickerLedBranco.detach();
+      digitalWrite(statusLED[2], LOW);
       sendNotification(appName, "Atenção ACORDEI e o portão ainda está aberto a " + String(pastTime) + " minutos!");
     }
   } else {
