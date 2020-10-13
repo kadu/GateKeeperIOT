@@ -25,14 +25,8 @@
 
 #define appName      "GateKeeper!"
 #define ENABLE_DEBUG
-#define CONFIG_BUTTON D5
+#define CONFIG_BUTTON D2
 #define GATE_SENSOR D1
-
-#ifdef ENABLE_DEBUG
-  #define DEBUG_ESP_PORT Serial
-  #define NODEBUG_WEBSOCKETS
-  #define NDEBUG
-#endif
 
 AsyncWebServer  server(80);
 DNSServer       dns;
@@ -42,12 +36,12 @@ Ticker          ticker;
 Ticker          tickerDOG;
 volatile int    watchdogCount;
 Bounce debouncer         = Bounce();
-int statusLED[3]         = {D2, D3, D4};
+int statusLED[3]         = {D5, D4, D3};
 bool sendClosedMessage   = false;
 bool myPowerState        = true;
 bool shouldSaveConfig    = false;
-bool snozzedNotifications= false;
-int snozzeTimeout        = 0;
+bool snoozedNotifications= false;
+unsigned long snoozedTimeout        = 0;
 int countOpenGarage      = 0;
 
 char waitTimer[3];
@@ -221,8 +215,8 @@ void doubleclick() {
 
 void snoozeNotification() {
   Serial.println("Snooze");
-  snozzedNotifications = true;
-  snozzeTimeout = millis() + 1800000; // 30 mins
+  snoozedNotifications = true;
+  snoozedTimeout = millis() + 1800000; // 30 mins
 }
 
 bool onPowerState(const String &deviceId, bool &state) {
@@ -274,7 +268,17 @@ void sendGarageClosedMessage() {
 void repeatMe() {
   countOpenGarage++;
   int pastTime = atoi(waitTimer) * countOpenGarage;
-  sendNotification(appName, "Atenção o portão está aberto a " + String(pastTime) + " minutos!");
+
+  if(snoozedNotifications) {
+    if(millis() > snoozedTimeout) {
+      snoozedTimeout = 0;
+      snoozedNotifications = false;
+      sendNotification(appName, "Atenção ACORDEI e o portão ainda está aberto a " + String(pastTime) + " minutos!");
+    }
+  } else {
+    sendNotification(appName, "Atenção o portão está aberto a " + String(pastTime) + " minutos!");
+  }
+
   SinricProContactsensor &myContact = SinricPro[alexa_sensor_id];
   myContact.sendContactEvent(LOW);
   digitalWrite(statusLED[2], HIGH);
