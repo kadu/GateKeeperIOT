@@ -21,7 +21,7 @@ This is a base circuit, feel free to change or add some new capabilities ;)
 
 # Integrations
 ## PushBullet
-I was made to send notifications to your phone, to be able to do this, it was necessary to have a help from a notification gateway, called push bullet, You will need to create a account in it, and when you was setting me up, I will request your API key, and a Fingerprint. The API key you will found on Pushbullet Painel, under Settings Menu, just click on "Create Access Token", save that code ;)
+I was made to send notifications to your phone, to be able to do this, it was necessary to have a help from a notification gateway, called push bullet (https://www.pushbullet.com/), You will need to create a account in it, and when you was setting me up, I will request your API key, and a Fingerprint. The API key you will found on Pushbullet Painel, under Settings Menu, just click on "Create Access Token", save that code ;)
 To get the Fingerprint, is just go to  https://www.grc.com/fingerprints.htm and on Custom Site Fingerprinting, just put URL **api.pushbullet.com** and get the strange Hex Code called (Security Certificate's Authentic Fingerprint), save that code too :P.
 **Important**: The integration will use the email that you used to create your accound, if someone else need to be notified, just repeat the process with all people emails!
 ## Alexa
