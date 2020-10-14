@@ -263,6 +263,7 @@ void sendGarageClosedMessage() {
     delay(100);
   }
   sendClosedMessage = true;
+  tickerLedBranco.detach();
   digitalWrite(statusLED[2], LOW);
   countOpenGarage = 0;
 }
