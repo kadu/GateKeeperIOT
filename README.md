@@ -44,3 +44,5 @@ Thank you! \o/
 And all robots can count sheep now!
 
 ![Wifi Configuration Screen](https://github.com/kadu/GateKeeperIOT/blob/master/assets/gatekeeperiot_wificonfig.jpg?raw=true)
+
+![Wifi Configuration Screen II](https://github.com/kadu/GateKeeperIOT/blob/master/assets/gatekeeper_full_config.png?raw=true)
