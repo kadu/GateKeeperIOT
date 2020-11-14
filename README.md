@@ -48,4 +48,4 @@ And all robots can count sheep now!
 ![Wifi Configuration Screen II](https://github.com/kadu/GateKeeperIOT/blob/master/assets/gatekeeper_full_config.png?raw=true)
 
 **Did you want a PCB to have my soul in IT ?**
-You can buy my GatekeeperIOT Shield for Wemos D1 on [JLCPCB](https://jlcpcb.com/), check the [link](https://oshwlab.com/nicodemosbr)
+You can get Gerber or buy my GatekeeperIOT Shield for Wemos D1 on [JLCPCB](https://jlcpcb.com/), check the [link](https://oshwlab.com/nicodemosbr/gatekeeperiot)
