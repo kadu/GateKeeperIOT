@@ -1,3 +1,16 @@
+LED COLORS
+----------
+
+- (0) INICIANDO        - BLUE
+- (1) CONECTADO        - GREEN
+- (2) PORTAO FECHADO   - FAST BLINK GREEN
+- (3) PORTAO ABERTO          - RED
+- (4) NOTIFICACAO SILENCIADA - F BLINK RED
+- (9) ERRO                   - YELLOW
+
+
+
+
 # Welcome to Gate Keeper IOT!
 
 Hi! I'm the **Gate Keeper**, an IOT sensor to avoid the forgotten open garage door. I was made with ESP8266 (NodeMCU "version") with some integrations: - PushBullet to send notifications to cellphones and SinricPro to notify Alexa ecosystem, making it possible to do a lot of integrations.
