@@ -365,20 +365,10 @@ void repeatMe() {
 
   if(snoozedNotifications) {
     if(millis() > snoozedTimeout) {
-      snoozedTimeout = 0;
-      snoozedNotifications = false;
-      tickerLedBranco.detach();
-      digitalWrite(statusLED[2], LOW);
-      Serial.println("mandei-02");
-      // myContact.sendContactEvent(_OPENED_GATE);
       sendStatus(_OPENED_GATE);
-      // sendNotification(appName, "Atenção ACORDEI e o portão ainda está aberto a " + String(pastTime) + " minutos!");
+      snoozeNotification();
     }
   } else {
-    // Serial.println("mandei-03");
-    // Serial.println("mandando um LOW01");
-    // myContact.sendContactEvent(_OPENED_GATE);
-    // sendNotification(appName, "Atenção o portão está aberto a " + String(pastTime) + " minutos!");
     sendStatus(_OPENED_GATE);
   }
   digitalWrite(statusLED[2], LOW);
