@@ -288,15 +288,20 @@ void behaviorgate() {
   switch (machine_gate) {
     case FSM_GATE_OPENED:
       last_time_gate = millis();
+      Serial.println("last_time_gate ");
+      Serial.println(last_time_gate);
+      Serial.println("FSM_GATE_OPENED");
       break;
 
     case FSM_GATE_CLOSED:
       /* mandar noti fechado se app = WARNING */
       /* resetar estado do app */
+      Serial.println("FSM_GATE_CLOSED");
       break;
 
     case FSM_GATE_OPENED_NOTIFY:
       last_time_gate = millis();
+      Serial.println("FSM_GATE_OPENED_NOTIFY");
       /* notificar */
       break;
   }
@@ -307,21 +312,26 @@ void behaviorapp() {
     case FSM_APP_SNOOZE:
       last_time_app = millis();
       isBtnSnoozedPressed = false;
+      Serial.println("FSM_APP_SNOOZE");
       break;
 
     case FSM_APP_SNOOZE_VERIFY:
+      Serial.println("FSM_APP_SNOOZE_VERIFY");
       break;
 
     case FSM_APP_WARNING:
+      Serial.println("FSM_APP_WARNING");
       break;
 
     default:
+      Serial.println("DEFAULT APP");
       break;
   }
 }
 
 void loop() {
   int gateSensor = debouncerGate.read();
+  Serial.println(gateSensor);
   watchdogCount = 0;
 
   SinricPro.handle();
@@ -333,6 +343,9 @@ void loop() {
     machine_gate = FSM_GATE_CONFIG;
   }
   else if (machine_gate == FSM_GATE_CONFIG && gateSensor == SENSORGATE_CLOSED/* portao fechado */) {
+    machine_gate = FSM_GATE_CLOSED;
+  }
+  else if (machine_gate == FSM_GATE_OPENED && gateSensor == SENSORGATE_CLOSED/* portao fechado */) {
     machine_gate = FSM_GATE_CLOSED;
   }
   else if (machine_gate == FSM_GATE_CONFIG && gateSensor == SENSORGATE_OPENED/* portao aberto */) {
@@ -371,7 +384,7 @@ void loop() {
   else if (machine_app == FSM_APP_WARNING && machine_gate == FSM_GATE_CLOSED) {
     machine_app = FSM_APP_NORMAL;
   }
-  else if (machine_app == FSM_APP_NORMAL && 1==1/*apertou botao de soneca */ ) {
+  else if (machine_app == FSM_APP_NORMAL && isBtnSnoozedPressed/*apertou botao de soneca */ ) {
     machine_app = FSM_APP_SNOOZE;
   }
   else if (machine_app == FSM_APP_SNOOZE) {
@@ -383,38 +396,7 @@ void loop() {
 
   behaviorapp();
 
-
-
-
-  // if(_keep_sensorValue != sensorValue) {
-  //   _keep_sensorValue = sensorValue;
-  //   Serial.print("GATE STATE ");
-  //   Serial.println(sensorValue);
-  // }
-
-  // digitalWrite(statusLED[1], sensorValue);
-  // if(!timer.isEnabled(timerNotification) && (millis() > 120000)) {
-  //   sendGarageClosedMessage();
-  // }
-
-  // if(sensorValue == 1) { // Open
-  //   if(!timer.isEnabled(timerNotification)) {
-  //     timer.restartTimer(timerNotification);
-  //     timer.enable(timerNotification);
-  //     Serial.println("starting countdown!");
-  //     sendClosedMessage = false;
-  //     ledStatus(_STATUS_OPEN);
-  //   }
-  // } else {
-  //   if(timer.isEnabled(timerNotification)) {
-  //     timer.disable(timerNotification);
-  //     Serial.println("stop countdown!");
-  //     ledStatus(_STATUS_CLOSED);
-  //     sendStatus(_CLOSED_GATE);
-  //     snoozedTimeout = 0;
-  //     snoozedNotifications = false;
-  //   }
-  // }
+  delay(3000);
 }
 
 
