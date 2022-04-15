@@ -1,0 +1,33 @@
+1. inicio
+1.1 definir estado do portão
+
+1.2 fechado
+1.2.1 usuario aberta botão para abrir portão
+1.2.1.1 definir estado de notificadores
+1.2.1.2 definir tempo dos notificadores
+
+1.3 aberto
+1.3.1 definir estado do notificador
+1.3.2 verificar tempo dos notificadores
+1.3.2.1 Tempo esgotado
+1.3.2.1.1 definir estado do notificador
+1.3.2.1.2 enviar notificacao
+1.3.2.1.3 definir tempo dos notificadores (adicionar mais tempo)
+
+
+
+
+
+
+
+
+
+1.3.1 usuario aperta botão para fechar o portão
+1.3.1.1 definir estado de notificadores
+1.3.1.2 cancelar tempo dos notificadores
+--
+
+
+1.2.2 usario aperta o botão de soneca
+1.2.2.1 definir estado de soneca
+1.2.2.2 redefinir tempo dos notificadores (adicionar tempo)
