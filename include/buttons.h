@@ -1,22 +1,35 @@
 #include <OneButton.h>
 
-#define BUTTON_PIN 4
+#define CONFIG_PIN 4
+#define GATE_PIN 13
 
-OneButton button(BUTTON_PIN, true, true);
+OneButton btnConfig(CONFIG_PIN, true, true);
+OneButton btnPortao(GATE_PIN, true, true);
 
-void button_click() {
-  Serial.println("x1");
+void click1() {
+  Serial.println("Button 1 click.");
 }
 
-void button_doubleClick() {
-  Serial.println("x2");
+void doubleclick1() {
+  Serial.println("Button 1 doubleclick.");
+}
+
+void click2() {
+  Serial.println("Button 2 click.");
+}
+
+void doubleclick2() {
+  Serial.println("Button 2 doubleclick.");
 }
 
 void button_setup() {
-  button.attachClick(button_click);
-  button.attachDoubleClick(button_doubleClick);
+  btnConfig.attachClick(click1);
+  btnConfig.attachDoubleClick(doubleclick1);
+  btnPortao.attachClick(click2);
+  btnPortao.attachDoubleClick(doubleclick2);
 }
 
 void button_loop() {
-  button.tick();
+  btnConfig.tick();
+  btnPortao.tick();
 }
