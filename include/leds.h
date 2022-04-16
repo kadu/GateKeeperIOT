@@ -9,4 +9,10 @@ CRGB leds[NUM_LEDS];
 void leds_setup() { 
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(50);
+  leds[0] = CRGB::Blue;
+  FastLED.show();
+}
+
+void leds_show() {
+  FastLED.show();
 }

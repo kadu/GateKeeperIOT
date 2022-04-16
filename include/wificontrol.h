@@ -565,6 +565,8 @@ void wifi_setup()
   }
   else
     Serial.println(ESPAsync_wifiManager.getStatus(WiFi.status()));
+
+  leds[0] = CRGB::Green;
 }
 
 void wifi_loop()
