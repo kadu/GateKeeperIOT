@@ -1,5 +1,6 @@
 #pragma once
 
+#include <leds.h>
 #include <ESP8266WiFi.h>
 #include <DNSServer.h>
 #include <ESP8266WiFiMulti.h>
@@ -70,11 +71,11 @@ WM_Config         WM_config;
 
 #define  CONFIG_FILENAME              F("/wifi_cred.dat")
 bool initialConfig = false;
-#define USE_AVAILABLE_PAGES     true
+#define USE_AVAILABLE_PAGES         true
 #define USE_ESP_WIFIMANAGER_NTP     false
 #define USE_CLOUDFLARE_NTP          false
 #define USING_CORS_FEATURE          true
-#define USE_DHCP_IP     true
+#define USE_DHCP_IP                 true
 
 #define USING_AFRICA        false
 #define USING_AMERICA       true
@@ -92,7 +93,7 @@ IPAddress gatewayIP   = IPAddress(192, 168, 2, 1);
 IPAddress netMask     = IPAddress(255, 255, 255, 0);
 
 
-#define USE_CONFIGURABLE_DNS      true
+#define USE_CONFIGURABLE_DNS      false
 
 IPAddress dns1IP      = gatewayIP;
 IPAddress dns2IP      = IPAddress(8, 8, 8, 8);
@@ -367,11 +368,6 @@ void wifi_setup()
   // initialize the LED digital pin as an output.
   pinMode(PIN_LED, OUTPUT);
 
-  Serial.begin(115200);
-  while (!Serial);
-
-  delay(200);
-
   Serial.print(F("\nStarting Async_ConfigOnDoubleReset using ")); Serial.print(FS_Name);
   Serial.print(F(" on ")); Serial.println(ARDUINO_BOARD);
   Serial.println(ESP_ASYNC_WIFIMANAGER_VERSION);
@@ -480,6 +476,9 @@ void wifi_setup()
     Serial.print(ssid);
     Serial.print(F(", PWD = "));
     Serial.println(password);
+
+    leds[0] = CRGB::Gold;
+    FastLED.show();
 
     digitalWrite(PIN_LED, LED_ON); // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
 
