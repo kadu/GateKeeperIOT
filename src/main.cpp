@@ -1,5 +1,4 @@
 #include <main.h>
-#include <wificontrol.h>
 
 void setup() {
   // ...
