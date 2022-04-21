@@ -276,7 +276,7 @@ void check_status()
   // Print hearbeat every HEARTBEAT_INTERVAL (10) seconds.
   if ((current_millis > checkstatus_timeout) || (checkstatus_timeout == 0))
   {
-    heartBeatPrint();
+    // heartBeatPrint();
     checkstatus_timeout = current_millis + HEARTBEAT_INTERVAL;
   }
 }
