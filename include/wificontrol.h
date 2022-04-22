@@ -27,6 +27,8 @@ FS* filesystem =      &LittleFS;
 DoubleResetDetector* drd;
 const int PIN_LED = 2;
 
+unsigned char device_id_gk = 0; // alexa
+
 String ssid = "GATEKEEPER_" + String(ESP_getChipId(), HEX);
 String password;
 
@@ -113,7 +115,10 @@ DNSServer dnsServer;
 WiFi_AP_IPConfig  WM_AP_IPconfig;
 WiFi_STA_IPConfig WM_STA_IPconfig;
 
-#include <wificontrol.h>
+#include <fauxmoESP.h>
+
+void alexa_serverSetup();
+fauxmoESP fauxmo;
 
 void initAPIPConfigStruct(WiFi_AP_IPConfig &in_WM_AP_IPconfig)
 {
@@ -567,6 +572,8 @@ void wifi_setup()
     Serial.println(ESPAsync_wifiManager.getStatus(WiFi.status()));
 
   leds[0] = CRGB::Green;
+
+  alexa_serverSetup();
 }
 
 void wifi_loop()
@@ -579,4 +586,35 @@ void wifi_loop()
 
   // put your main code here, to run repeatedly
   check_status();
+}
+
+
+// alexa
+void alexa_serverSetup() {
+  Serial.println("Config Alexa environment");
+  // These two callbacks are required for gen1 and gen3 compatibility
+  webServer.onRequestBody([](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+    if (fauxmo.process(request->client(), request->method() == HTTP_GET, request->url(), String((char *)data))) return;
+    // Handle any other body request here...
+  });
+  webServer.onNotFound([](AsyncWebServerRequest *request) {
+    String body = (request->hasParam("body", true)) ? request->getParam("body", true)->value() : String();
+    if (fauxmo.process(request->client(), request->method() == HTTP_GET, request->url(), body)) return;
+    // Handle not found request here...
+  });
+  webServer.begin();
+
+  // testando
+  fauxmo.createServer(false);
+  fauxmo.setPort(80);
+  fauxmo.enable(true);
+  device_id_gk = fauxmo.addDevice("gatekeeper");
+  fauxmo.onSetState([](unsigned char device_id, const char * device_name, bool state, unsigned char value) {
+    Serial.printf("[MAIN] Device #%d (%s) state: %s value: %d\n", device_id, device_name, state ? "ON" : "OFF", value);
+    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+  });
+}
+
+void alexa_loop() {
+  fauxmo.handle();
 }

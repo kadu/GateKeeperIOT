@@ -36,12 +36,13 @@ void gateOpen_enter()
 {
   Serial.println("Portão aberto (enter).");
   gateOpenMillis = millis();
+  fauxmo.setState(device_id_gk , true , 200);
 }
 
 void gateOpen_on() {
   if(gateOpenMillis > 0) {
     if(millis() - gateOpenMillis >= _notify_interval) {
-      _notify_interval = 15000;
+      _notify_interval = 60000;
       fsm.trigger(EVENT_NOTIFY);
     }
   }
@@ -56,6 +57,7 @@ void gateClose()
 {
   hasNotified = false;
   Serial.println("estado Portão fechado.");
+  fauxmo.setState(device_id_gk , false , 1);
 }
 
 void notify() {
@@ -66,7 +68,7 @@ void notify() {
 
 void snooze() {
   Serial.println("aciona o soneca");
-  _notify_interval = 40000;
+  _notify_interval = 120000;
   fsm.trigger(BUTTON_EVENT_SNOOZE_EXIT);
 }
 
@@ -114,5 +116,6 @@ void loop() {
   button_loop();
   wifi_loop();
   leds_show();
+  alexa_loop();
   fsm.run_machine();
 }

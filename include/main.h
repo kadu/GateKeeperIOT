@@ -6,6 +6,7 @@
 #include <leds.h>
 #include <OneButton.h>
 #include <Fsm.h>
+#include <ESPAsyncWebServer.h>
 
 #define CONFIG_PIN 4
 #define GATE_PIN 13
