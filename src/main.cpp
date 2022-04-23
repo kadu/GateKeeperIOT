@@ -3,6 +3,8 @@
 void btnSnooze() {
   Serial.println("\n\nevento Snooze");
   fsm.trigger(BUTTON_EVENT_SNOOZE);
+  isSnoozed = true;
+  leds[0] = CRGB::Orange;
 }
 
 void btnSnooze_dblClick() {
@@ -13,12 +15,9 @@ void gateSensorClick() {
   Serial.println("Button 2 click.");
 }
 
-void doubleclick2() {
-  Serial.println("Button 2 doubleclick.");
-}
-
 void gateSensorCloseEvent() {
   Serial.println("\n\nevento Portão fechado.");
+  isSnoozed = false;
 
   if(hasNotified) {
     fsm.trigger(BUTTON_EVENT_CLOSE_NOTIFY);
@@ -37,12 +36,20 @@ void gateOpen_enter()
   Serial.println("Portão aberto (enter).");
   gateOpenMillis = millis();
   fauxmo.setState(device_id_gk , true , 200);
+  if (!isSnoozed ) {
+    leds[0] = CRGB::Red;
+  } else {
+    leds[0] = CRGB::DarkSalmon;
+  }
 }
 
 void gateOpen_on() {
   if(gateOpenMillis > 0) {
     if(millis() - gateOpenMillis >= _notify_interval) {
-      _notify_interval = 60000;
+        isSnoozed = false;
+        String convert = CONFIG_NORMAL_ALERT_TIME;
+        int interval = convert.toFloat();
+      _notify_interval = interval * 60000;
       fsm.trigger(EVENT_NOTIFY);
     }
   }
@@ -58,6 +65,8 @@ void gateClose()
   hasNotified = false;
   Serial.println("estado Portão fechado.");
   fauxmo.setState(device_id_gk , false , 1);
+
+  leds[0] = CRGB::LightCoral;
 }
 
 void notify() {
@@ -67,8 +76,10 @@ void notify() {
 }
 
 void snooze() {
+  String convert = CONFIG_SNOOZE_TIME;
+  int interval = convert.toInt();
   Serial.println("aciona o soneca");
-  _notify_interval = 120000;
+  _notify_interval = interval * 60000;
   fsm.trigger(BUTTON_EVENT_SNOOZE_EXIT);
 }
 
@@ -81,7 +92,6 @@ void button_setup() {
   btnConfig.attachClick(btnSnooze);
   btnConfig.attachDoubleClick(btnSnooze_dblClick);
   btnPortao.attachClick(gateSensorClick);
-  btnPortao.attachDoubleClick(doubleclick2);
   btnPortao.attachLongPressStart(gateSensorCloseEvent);
   btnPortao.attachLongPressStop(gateSensorOpenEvent);
 }
@@ -110,6 +120,9 @@ void setup() {
   button_setup();
   wifi_setup();
   setupFSM();
+  String convert = CONFIG_NORMAL_ALERT_TIME;
+  int interval = convert.toFloat();
+  _notify_interval = interval * 60000;
 }
 
 void loop() {

@@ -38,6 +38,7 @@ void button_loop();
 
 int gateSensorState = 0;
 bool hasNotified = false;
+bool isSnoozed = false;
 
 // headers
 void gateOpen_enter();

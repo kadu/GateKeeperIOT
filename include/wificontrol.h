@@ -27,6 +27,9 @@ FS* filesystem =      &LittleFS;
 DoubleResetDetector* drd;
 const int PIN_LED = 2;
 
+#include <ArduinoJson.h>
+char configFileName[] = "/config.json";
+
 unsigned char device_id_gk = 0; // alexa
 
 String ssid = "GATEKEEPER_" + String(ESP_getChipId(), HEX);
@@ -105,6 +108,12 @@ IPAddress dns2IP      = IPAddress(8, 8, 8, 8);
 IPAddress APStaticIP  = IPAddress(192, 168, 100, 1);
 IPAddress APStaticGW  = IPAddress(192, 168, 100, 1);
 IPAddress APStaticSN  = IPAddress(255, 255, 255, 0);
+
+#define CONFIG_SNOOZE_TIME_LEN 8
+#define CONFIG_NORMAL_ALERT_TIME_LEN 8
+char CONFIG_SNOOZE_TIME[CONFIG_SNOOZE_TIME_LEN] = "30";
+char CONFIG_NORMAL_ALERT_TIME[CONFIG_NORMAL_ALERT_TIME_LEN] = "3";
+
 
 #include <ESPAsync_WiFiManager.h>
 
@@ -223,6 +232,118 @@ uint8_t connectMultiWiFi()
   }
 
   return status;
+}
+
+//flag for saving data
+bool shouldSaveConfig = false;
+
+//callback notifying us of the need to save config
+void saveConfigCallback()
+{
+  Serial.println(F("Should save config"));
+  shouldSaveConfig = true;
+}
+
+bool loadFileFSConfigFile()
+{
+  //clean FS, for testing
+  //FileFS.format();
+
+  //read configuration from FS json
+  Serial.println(F("Mounting FS..."));
+
+  if (FileFS.begin())
+  {
+    Serial.println(F("Mounted file system"));
+
+    if (FileFS.exists(configFileName))
+    {
+      //file exists, reading and loading
+      Serial.println(F("Reading config file"));
+      File configFile = FileFS.open(configFileName, "r");
+
+      if (configFile)
+      {
+        Serial.print(F("Opened config file, size = "));
+        size_t configFileSize = configFile.size();
+        Serial.println(configFileSize);
+
+        // Allocate a buffer to store contents of the file.
+        std::unique_ptr<char[]> buf(new char[configFileSize + 1]);
+
+        configFile.readBytes(buf.get(), configFileSize);
+
+        Serial.print(F("\nJSON parseObject() result : "));
+
+        DynamicJsonDocument json(1024);
+        auto deserializeError = deserializeJson(json, buf.get(), configFileSize);
+
+        if ( deserializeError )
+        {
+          Serial.println(F("failed"));
+          return false;
+        }
+        else
+        {
+          Serial.println(F("OK"));
+
+          if (json["snooze_time"])
+            strncpy(CONFIG_SNOOZE_TIME, json["snooze_time"], sizeof(CONFIG_SNOOZE_TIME));
+
+          if (json["normal_alert_time"])
+            strncpy(CONFIG_NORMAL_ALERT_TIME, json["normal_alert_time"], sizeof(CONFIG_NORMAL_ALERT_TIME_LEN));
+
+        }
+
+        //serializeJson(json, Serial);
+        serializeJsonPretty(json, Serial);
+
+        configFile.close();
+      }
+    }
+  }
+  else
+  {
+    Serial.println(F("failed to mount FS"));
+    return false;
+  }
+  return true;
+}
+
+bool saveFileFSConfigFile()
+{
+  Serial.println(F("Saving config"));
+
+  DynamicJsonDocument json(1024);
+
+  json["snooze_time"] = CONFIG_SNOOZE_TIME;
+  json["normal_alert_time"]   = CONFIG_NORMAL_ALERT_TIME;
+
+  File configFile = FileFS.open(configFileName, "w");
+
+  if (!configFile)
+  {
+    Serial.println(F("Failed to open config file for writing"));
+
+    return false;
+  }
+
+#if (ARDUINOJSON_VERSION_MAJOR >= 6)
+  //serializeJson(json, Serial);
+  serializeJsonPretty(json, Serial);
+  // Write data to file and close it
+  serializeJson(json, configFile);
+#else
+  //json.printTo(Serial);
+  json.prettyPrintTo(Serial);
+  // Write data to file and close it
+  json.printTo(configFile);
+#endif
+
+  configFile.close();
+  //end save
+
+  return true;
 }
 
 void heartBeatPrint()
@@ -402,6 +523,13 @@ void wifi_setup()
     }
   }
 
+  loadFileFSConfigFile();
+  // The extra parameters to be configured (can be either global or just in the setup)
+  // After connecting, parameter.getValue() will get you the configured value
+  // id/name placeholder/prompt default length
+  ESPAsync_WMParameter custom_snooze_time("snooze_time", "snooze_time", CONFIG_SNOOZE_TIME, CONFIG_NORMAL_ALERT_TIME_LEN + 1);
+  ESPAsync_WMParameter custom_normal_alert_time("normal_alert_time",   "normal_alert_time",   CONFIG_NORMAL_ALERT_TIME, CONFIG_NORMAL_ALERT_TIME_LEN + 1);
+
   drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
 
   unsigned long startedAt = millis();
@@ -420,6 +548,14 @@ void wifi_setup()
   ESPAsync_WiFiManager ESPAsync_wifiManager(&webServer, &dnsServer, "AsyncConfigOnDoubleReset");
   ESPAsync_wifiManager.setMinimumSignalQuality(-1);
   ESPAsync_wifiManager.setConfigPortalChannel(0);
+
+  //set config save notify callback
+  ESPAsync_wifiManager.setSaveConfigCallback(saveConfigCallback);
+
+  //add all your parameters here
+  ESPAsync_wifiManager.addParameter(&custom_snooze_time);
+  ESPAsync_wifiManager.addParameter(&custom_normal_alert_time);
+
 
 #if USING_CORS_FEATURE
   ESPAsync_wifiManager.setCORSHeader("Your Access-Control-Allow-Origin");
@@ -446,16 +582,16 @@ void wifi_setup()
     LOGERROR3(F("* Add SSID = "), Router_SSID, F(", PW = "), Router_Pass);
     wifiMulti.addAP(Router_SSID.c_str(), Router_Pass.c_str());
 
-    ESPAsync_wifiManager.setConfigPortalTimeout(120); //If no access point name has been previously entered disable timeout.
-    Serial.println(F("Got ESP Self-Stored Credentials. Timeout 120s for Config Portal"));
+    ESPAsync_wifiManager.setConfigPortalTimeout(480); //If no access point name has been previously entered disable timeout.
+    Serial.println(F("Got ESP Self-Stored Credentials. Timeout 480s for Config Portal"));
   }
 
   if (loadConfigData())
   {
     configDataLoaded = true;
 
-    ESPAsync_wifiManager.setConfigPortalTimeout(120); //If no access point name has been previously entered disable timeout.
-    Serial.println(F("Got stored Credentials. Timeout 120s for Config Portal"));
+    ESPAsync_wifiManager.setConfigPortalTimeout(480); //If no access point name has been previously entered disable timeout.
+    Serial.println(F("Got stored Credentials. Timeout 480s for Config Portal"));
   }
   else
   {
@@ -571,6 +707,16 @@ void wifi_setup()
   else
     Serial.println(ESPAsync_wifiManager.getStatus(WiFi.status()));
 
+  //read updated parameters
+  strncpy(CONFIG_SNOOZE_TIME, custom_snooze_time.getValue(), sizeof(CONFIG_SNOOZE_TIME));
+  strncpy(CONFIG_NORMAL_ALERT_TIME,   custom_normal_alert_time.getValue(),   sizeof(CONFIG_NORMAL_ALERT_TIME));
+
+  //save the custom parameters to FS
+  if (shouldSaveConfig)
+  {
+    saveFileFSConfigFile();
+  }
+
   leds[0] = CRGB::Green;
 
   alexa_serverSetup();
@@ -604,7 +750,6 @@ void alexa_serverSetup() {
   });
   webServer.begin();
 
-  // testando
   fauxmo.createServer(false);
   fauxmo.setPort(80);
   fauxmo.enable(true);
