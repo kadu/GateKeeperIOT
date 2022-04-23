@@ -4,7 +4,7 @@ void btnSnooze() {
   Serial.println("\n\nevento Snooze");
   fsm.trigger(BUTTON_EVENT_SNOOZE);
   isSnoozed = true;
-  leds[0] = CRGB::Orange;
+  leds_portao_aberto_soneca();
 }
 
 void btnSnooze_dblClick() {
@@ -37,9 +37,9 @@ void gateOpen_enter()
   gateOpenMillis = millis();
   fauxmo.setState(device_id_gk , true , 200);
   if (!isSnoozed ) {
-    leds[0] = CRGB::Red;
+    leds_portao_aberto();
   } else {
-    leds[0] = CRGB::DarkSalmon;
+    leds_portao_aberto_soneca();
   }
 }
 
@@ -65,8 +65,7 @@ void gateClose()
   hasNotified = false;
   Serial.println("estado Portão fechado.");
   fauxmo.setState(device_id_gk , false , 1);
-
-  leds[0] = CRGB::LightCoral;
+  leds_portao_fechado();
 }
 
 void notify() {

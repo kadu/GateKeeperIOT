@@ -617,9 +617,7 @@ void wifi_setup()
     Serial.print(ssid);
     Serial.print(F(", PWD = "));
     Serial.println(password);
-
-    leds[0] = CRGB::Gold;
-    FastLED.show();
+    leds_wifi_config();
 
     digitalWrite(PIN_LED, LED_ON); // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
 
@@ -717,7 +715,7 @@ void wifi_setup()
     saveFileFSConfigFile();
   }
 
-  leds[0] = CRGB::Green;
+  leds_wifi_ok();
 
   alexa_serverSetup();
 }
