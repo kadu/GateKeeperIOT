@@ -111,8 +111,13 @@ IPAddress APStaticSN  = IPAddress(255, 255, 255, 0);
 
 #define CONFIG_SNOOZE_TIME_LEN 8
 #define CONFIG_NORMAL_ALERT_TIME_LEN 8
+#define CONFIG_IFTTT_KEY_LEN 64
+#define CONFIG_IFTTT_EVENT_LEN 64
+
 char CONFIG_SNOOZE_TIME[CONFIG_SNOOZE_TIME_LEN] = "30";
 char CONFIG_NORMAL_ALERT_TIME[CONFIG_NORMAL_ALERT_TIME_LEN] = "3";
+char CONFIG_IFTTT_KEY[CONFIG_IFTTT_KEY_LEN] = "";
+char CONFIG_IFTTT_EVENT[CONFIG_IFTTT_EVENT_LEN] = "";
 
 
 #include <ESPAsync_WiFiManager.h>
@@ -291,7 +296,13 @@ bool loadFileFSConfigFile()
             strncpy(CONFIG_SNOOZE_TIME, json["snooze_time"], sizeof(CONFIG_SNOOZE_TIME));
 
           if (json["normal_alert_time"])
-            strncpy(CONFIG_NORMAL_ALERT_TIME, json["normal_alert_time"], sizeof(CONFIG_NORMAL_ALERT_TIME_LEN));
+            strncpy(CONFIG_NORMAL_ALERT_TIME, json["normal_alert_time"], CONFIG_NORMAL_ALERT_TIME_LEN);
+
+          if (json["config_ifttt_key"])
+            strncpy(CONFIG_IFTTT_KEY, json["config_ifttt_key"], CONFIG_IFTTT_KEY_LEN);
+
+          if (json["config_ifttt_event"])
+            strncpy(CONFIG_IFTTT_EVENT, json["config_ifttt_event"], CONFIG_IFTTT_EVENT_LEN);
 
         }
 
@@ -318,6 +329,9 @@ bool saveFileFSConfigFile()
 
   json["snooze_time"] = CONFIG_SNOOZE_TIME;
   json["normal_alert_time"]   = CONFIG_NORMAL_ALERT_TIME;
+  json["config_ifttt_key"]    = CONFIG_IFTTT_KEY;
+  json["config_ifttt_event"]  = CONFIG_IFTTT_EVENT;
+
 
   File configFile = FileFS.open(configFileName, "w");
 
@@ -529,6 +543,8 @@ void wifi_setup()
   // id/name placeholder/prompt default length
   ESPAsync_WMParameter custom_snooze_time("snooze_time", "snooze_time", CONFIG_SNOOZE_TIME, CONFIG_NORMAL_ALERT_TIME_LEN + 1);
   ESPAsync_WMParameter custom_normal_alert_time("normal_alert_time",   "normal_alert_time",   CONFIG_NORMAL_ALERT_TIME, CONFIG_NORMAL_ALERT_TIME_LEN + 1);
+  ESPAsync_WMParameter custom_ifttt_key("config_ifttt_key", "config_ifttt_key", CONFIG_IFTTT_KEY, CONFIG_IFTTT_KEY_LEN + 1);
+  ESPAsync_WMParameter custom_ifttt_event("config_ifttt_event", "config_ifttt_event", CONFIG_IFTTT_EVENT, CONFIG_IFTTT_EVENT_LEN + 1);
 
   drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
 
@@ -555,6 +571,8 @@ void wifi_setup()
   //add all your parameters here
   ESPAsync_wifiManager.addParameter(&custom_snooze_time);
   ESPAsync_wifiManager.addParameter(&custom_normal_alert_time);
+  ESPAsync_wifiManager.addParameter(&custom_ifttt_key);
+  ESPAsync_wifiManager.addParameter(&custom_ifttt_event);
 
 
 #if USING_CORS_FEATURE
@@ -708,6 +726,8 @@ void wifi_setup()
   //read updated parameters
   strncpy(CONFIG_SNOOZE_TIME, custom_snooze_time.getValue(), sizeof(CONFIG_SNOOZE_TIME));
   strncpy(CONFIG_NORMAL_ALERT_TIME,   custom_normal_alert_time.getValue(),   sizeof(CONFIG_NORMAL_ALERT_TIME));
+  strncpy(CONFIG_IFTTT_KEY, custom_ifttt_key.getValue(), CONFIG_IFTTT_KEY_LEN);
+  strncpy(CONFIG_IFTTT_EVENT, custom_ifttt_event.getValue(), CONFIG_IFTTT_EVENT_LEN);
 
   //save the custom parameters to FS
   if (shouldSaveConfig)

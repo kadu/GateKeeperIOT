@@ -4,7 +4,6 @@ void btnSnooze() {
   Serial.println("\n\nevento Snooze");
   fsm.trigger(BUTTON_EVENT_SNOOZE);
   isSnoozed = true;
-  leds_portao_aberto_soneca();
 }
 
 void btnSnooze_dblClick() {
@@ -72,6 +71,7 @@ void notify() {
   Serial.println("envia notificação");
   hasNotified = true;
   fsm.trigger(EVENT_NOTIFY_OPEN);
+  envia_evento("O portão esta aberto", CONFIG_IFTTT_KEY, CONFIG_IFTTT_EVENT);
 }
 
 void snooze() {
@@ -85,6 +85,7 @@ void snooze() {
 void notify_close() {
   Serial.println("envia notificação que fechou o portão");
   fsm.trigger(BUTTON_EVENT_CLOSE_NOTIFY_CLOSE);
+  envia_evento("O portão foi fechado", CONFIG_IFTTT_KEY, CONFIG_IFTTT_EVENT);
 }
 
 void button_setup() {
