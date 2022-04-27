@@ -71,7 +71,7 @@ void notify() {
   Serial.println("envia notificação");
   hasNotified = true;
   fsm.trigger(EVENT_NOTIFY_OPEN);
-  envia_evento("O portão esta aberto", CONFIG_IFTTT_KEY, CONFIG_IFTTT_EVENT);
+  envia_evento("O_PORTAO_ESTA_ABERTO", CONFIG_IFTTT_KEY, CONFIG_IFTTT_EVENT);
 }
 
 void snooze() {
@@ -85,7 +85,7 @@ void snooze() {
 void notify_close() {
   Serial.println("envia notificação que fechou o portão");
   fsm.trigger(BUTTON_EVENT_CLOSE_NOTIFY_CLOSE);
-  envia_evento("O portão foi fechado", CONFIG_IFTTT_KEY, CONFIG_IFTTT_EVENT);
+  envia_evento("PORTAO_FOI_FECHADO", CONFIG_IFTTT_KEY, CONFIG_IFTTT_EVENT);
 }
 
 void button_setup() {

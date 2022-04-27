@@ -41,7 +41,7 @@ String Router_Pass;
 
 // From v1.1.0
 // You only need to format the filesystem once
-//#define FORMAT_FILESYSTEM       true
+// #define FORMAT_FILESYSTEM       true
 #define FORMAT_FILESYSTEM         false
 
 #define MIN_AP_PASSWORD_SIZE    8
