@@ -7,7 +7,8 @@ void btnSnooze() {
 }
 
 void btnSnooze_dblClick() {
-  Serial.println("Chama funções de configuração");
+  Serial.println("Reiniciando");
+  ESP.reset();
 }
 
 void gateSensorClick() {
