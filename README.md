@@ -1,48 +1,79 @@
-LED COLORS
-----------
+# Welcome to Gatekeeper IOT
+[Check de documentation in english here](./README.en.md)
 
-- (0) INICIANDO        - BLUE
-- (1) CONECTADO        - GREEN
-- (2) PORTAO FECHADO   - FAST BLINK GREEN
-- (3) PORTAO ABERTO          - RED
-- (4) NOTIFICACAO SILENCIADA - F BLINK RED
-- (9) ERRO                   - YELLOW
+# Bem-vindo ao Gatekeeper IOT!
+
+Olá, eu sou o Porteiro Eletrônico, ou melhor, um sensor IOT para quem esquece "coisas" abertas, como portões eletrônicos ;)...
+
+Fui construído usando um Wemos D1 (ESP8266) com alguns anabolizantes como integração com a Alexa (minha irmã mais velha) e o IFTTT (If This Then That) um site que permite me integrar com um mundo de coisas.
+
+# Primeiras configurações
+
+Ao me ligar pela primeira vez, você precisará configurar as credenciais do Wifi para eu poder criar "asas". Isso é identificado se você não ver uma luz "azul forte" ou "vermelha" no meu case, ou seja, luzes apagadas indicam falta de configuração. Caso você precise refazer a configuração você também pode executar o procedimento de reset, que explico abaixo:
+
+### Resetando as configurações
+
+- Me ligue e espere uns 10 segundos.
+- Você precisará me rebootar 2 vezes em um intervalo de 6 segundos e para me rebootar, basta dar um duplo click no botão.
+- Duplo click ... espera 6 segundos ... Duplo click.
+
+Nesse ponto criarei uma rede sem fio chamada GateKeeper_XXXXXX, basta você acessar do seu celular / tablet / computador, que irei mostrar as páginas de configuração como descreverei abaixo:
+![](./assets/wificonfig01.jpg)
+![](./assets/wificonfig02.jpg)
+![](./assets/wificonfig03.jpg)
+![](./assets/wificonfig04.jpg)
+![](./assets/wificonfig05.jpg)
+
+## Configurando o tempo dos avisos
+Como você viu nas telas acima, existe 2 configurações relacionadas a tempo:
+- **snozze_time** - Esse é o tempo que ficarei "quieto" sem mandar mensagens.
+- **normal_alert_time** - Já esse é o intervalo de tempo que ficarei mandando alertas.
+
+Explicando melhor o funcionamento, depois que o portão abrir, mandarei a primeira mensagem de esquecimento após **normal_alert_time** minutos, e depois mando de novo, de novo, de novo... até o portão fechar... MAS se você quiser que eu não mande tantas mensagens, você clica no botão de soneca (Snooze) e então vou esperar **snooze_time** para voltar a mandar as mensagens. E visto que mandei mensagem, vou avisar quando o portão foi fechado também!
+
+## Configurando as chaves do IFTTT
+Mais abaixo falo da integração com o site IFTTT, e é nessa tela que você irá fazer a configuração da **chave** e do **evento** que irá informar a plataforma para quem deve ir à mensagem. Bem simples e poderoso! ;)
 
 
+## Um pouco sobre as Integrações
 
+Como uma forma de aumentar as possibilidades do meu uso, fui desenvolvido e integrado com 2 incríveis plataformas que me dão poderes extraordinários, permitindo que, por exemplo, eu abaixe o volume do som da casa de alguém quando o portão for fechado, ou até mesmo faça uma ligação telefônica. Enfim, um mundão de coisas.
 
-# Welcome to Gate Keeper IOT!
+A integração com a irmã **Alexa** é bem tranquila, basta eu estar conectado com a rede e a minha mana já vai conseguir me encontrar. Eu aparecerei lá como uma lâmpada, mas não fique preocupado, é só um jeito que achei de falar com ela e ela me entender, afinal ela é gringa, fala umas línguas  estranhas :D. Porém, esse fato permite que quem comandar a **Alexa** possa me utilizar como gatilho para suas integrações, imagina que você quer acender uma lâmpada toda vez que o portão estiver aberto, eu posso ajudar com isso ;)
 
-Hi! I'm the **Gate Keeper**, an IOT sensor to avoid the forgotten open garage door. I was made with ESP8266 (Wemos D1 "version") with some integrations: **Alexa** and **IFTTT**,  making it possible to do a lot of integrations.
+Já a integração com o site If This Then That é um pouco mais complexa, porém como o Tio Ben sempre nos ensinou:
+- Com grandes poderes vem grandes responsabilidades.
 
-If you want to make your own GateKeeper, feel free, and here I will share some information to help you guy! :P
+Dessa forma, também posso ser usado como gatilho para integrações usando essa plataforma. Para configurar minha ligação com esse serviço no momento de configuração do meu Wifi, você pode entrar com alguns dados, e dessa maneira, sempre que tiver eventos, irei avisar o site. Veja abaixo como fazer um gatilho.
 
-Materials:
--
--	Wemos D1 (Esp8266) [link](https://s.click.aliexpress.com/e/_AW9CTH)
--	Push Button
--	WS2812b Led
--	EndStop [link](https://s.click.aliexpress.com/e/_A1LsVD)
-- Personalized PCB (Wemos shield) [link] (https://oshwlab.com/nicodemosbr/gatekeeperiot)
+Acesse o site [ifttt](https://ifttt.com/explore) e crie sua conta.
 
-# Integrations
-## Alexa
-To have access to a whole world of integrations was added inside my body the ability to talk with my old sister Alexa, It's so simple, just search for a device in your Alexa ecosystem and you will find me. Don't worry if you see a light bulb with my name, it is me! If garage open, the light will be on.
+Logo depois você cairá na tela de pesquisa, entre com o termo webhooks e clique no icone azul
+![](./assets/ifttt01.png)
 
-## IFTTT
-If you are able to configure a trigger event in IFTTT site, I have a configuration that made possible to send webhooks to an IFTTT endpoint, and this thing open the possibilities for integration.
+Na próxima tela clique no botão "Create" e você cairá na tela que é "O nome do site" veja:
+![](./assets/ifttt02.png)
 
-## Gatekeeper IOT - (It's ME, and I'm not Mario)
-There is something important to you know about me, first one: Be Kind to me, I'm hardware with feelings ;), second, I need internet to work, I don't know other protocols, just TCP/IP ;). The easiest way to configure me is double click the giant button in my case, with this, all my light will be turned off  and I will create an Access Point to you access by your phone or some other device with WiFi, the access point will be called -> **GateKeeper_XXXXXX**, a perfect name, what do you think? :) Just connect on IT, automatically will open a configuration Portal on your device with a screen like this (image below), just click in **Configure** Wifi, just follow the screen and fill the information, your Wifi Credentials and IFTTT Keys (if you want), Remember I told you to write it down right?
-You be able to configure after how many minutes I will send notifications message, and I will use this value to resend notifications, It means that if you forgot Garage Door opened after the value that you was configured, I will send a notification, and if anyone didn't close the Garage Door, I will notify you again after this interval. Here I need to whisper something to you, You know that big button in my case if you just press it, the notification will be snoozed in 30 minutes, it was made to you that can't let your visits go, and saying goodbye for a long time, a long handshake and things like that ;). And you need to know that I'm a good GateKeeper, if after this snooze time, you forgot your Garage Door Open, I will let you known, don't worry ;)
-And now, just hit the **SAVE** button and *VOALÀ!, if all the keys are correct, I will connect to the web and keep waiting for someone that forgot to close the Garage Door and I will **scream loud!**
-**Another important thing** I was made to work all day and all night, without food and water, but sometimes my brain can try to fly out of this little case, in this time you only need to press twice the big button and I will do a harakiri and restart myself. It hurts, don't do this all the time, please, I beg you!
-Thank you! \o/
-And all robots can count sheep now!
+Agora basta seguir os passos, clique no "Add", procure novamente por Webhooks e então você estará nessa tela:
+![](./assets/ifttt03.png)
 
-![Wifi Configuration Screen](https://github.com/kadu/GateKeeperIOT/blob/master/assets/gatekeeperiot_wificonfig.jpg?raw=true)
+Clique em "Receive a web request" e então coloque o nome do evento desejado, sugestão -> **gatekeeper** e clique em "Create trigger"
+![](./assets/ifttt04.png)
 
-![Wifi Configuration Screen II](https://github.com/kadu/GateKeeperIOT/blob/master/assets/gatekeeper_full_config.png?raw=true)
+Agora sua tela ficou como a tela abaixo, clique em  "Then that"
+![](./assets/ifttt05.png)
 
-**Did you want a PCB to have my soul in IT ?**
-You can get Gerber or buy my GatekeeperIOT Shield for Wemos D1 on [JLCPCB](https://jlcpcb.com/), check the [link](https://oshwlab.com/nicodemosbr/gatekeeperiot)
+Nesse momento é que você observará o poder dessa plataforma e o quão legal é eu estar integrado com ela, pois dessa maneira como falei agora pouco é possível fazer integrações com todos os "ícones" que você está vendo aí na página, vou deixar uma foto aqui e você vai "cansar" de dar scrooll pra ver o final.
+![](./assets/ifttt_all.png)
+
+Não te disse? :D
+
+Agora escolha a integração que você desejar, eu vou escolher PushBullet para te mostrar como configurar, mas fique a vontade ;) - O Pushbullet permite que você mande notificações para seu celular.
+![](./assets/ifttt06.png)
+
+Na tela de configuração eu escolhi "Push a note" e fiz as configurações necessárias para ele enviar a notificação.
+![](./assets/ifttt07.png)
+
+Perceba que alterei ali a mensagem, e coloquei aquele "Value1" que você encontra clicando em "Add ingredient", isso permitirá que eu envie qual é o "status" do portão quando mandar as mensagens.
+
+Pronto, não demorou nem doeu, e aqui estou falando com a **Alexa** e com esse mundo de integrações possíveis através do IFTTT.
