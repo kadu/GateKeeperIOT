@@ -7,6 +7,14 @@ Olá, eu sou o Porteiro Eletrônico, ou melhor, um sensor IOT para quem esquece 
 
 Fui construído usando um Wemos D1 (ESP8266) com alguns anabolizantes como integração com a Alexa (minha irmã mais velha) e o IFTTT (If This Then That) um site que permite me integrar com um mundo de coisas.
 
+## Fotos
+
+
+Case fechado | Case aberto | Sensores
+---------|----------|---------
+ ![](./assets/gatekeeper01.jpg) | ![](./assets/gatekeeper02.jpg) | ![](./assets/gatekeeper03.jpg)
+
+
 # Primeiras configurações
 
 Ao me ligar pela primeira vez, você precisará configurar as credenciais do Wifi para eu poder criar "asas". Isso é identificado se você não ver uma luz "azul forte" ou "vermelha" no meu case, ou seja, luzes apagadas indicam falta de configuração. Caso você precise refazer a configuração você também pode executar o procedimento de reset, que explico abaixo:
