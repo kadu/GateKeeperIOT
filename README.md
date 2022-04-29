@@ -43,6 +43,9 @@ Explicando melhor o funcionamento, depois que o portão abrir, mandarei a primei
 Mais abaixo falo da integração com o site IFTTT, e é nessa tela que você irá fazer a configuração da **chave** e do **evento** que irá informar a plataforma para quem deve ir à mensagem. Bem simples e poderoso! ;)
 
 
+## Sensores
+Estou preparado para sensores tipo botões, botões de fim de curso, sensores reed switch... ou seja, qualquer sensor tipo "chave", só ligar ali no fio e eu saberei quando detectar se o portão "abriu ou fechou".
+
 ## Um pouco sobre as Integrações
 
 Como uma forma de aumentar as possibilidades do meu uso, fui desenvolvido e integrado com 2 incríveis plataformas que me dão poderes extraordinários, permitindo que, por exemplo, eu abaixe o volume do som da casa de alguém quando o portão for fechado, ou até mesmo faça uma ligação telefônica. Enfim, um mundão de coisas.
